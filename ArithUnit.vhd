@@ -5,15 +5,14 @@ Use ieee.numeric_std.all;
 entity ArithUnit is
 		generic (width : integer := 64);
 		port (
-				A, B			:	in	std_logic_vector(width-1 downto 0);
-				NotA, AddSub, ExtWord	:	in	std_logic;
-				AltBu, AltB 		:	out 	std_logic;
-				Y			:	out	std_logic_vector(width-1 downto 0);
+				A, B				:	in	std_logic_vector(width-1 downto 0);
+				NotA, AddSub, ExtWord		:	in	std_logic;
+				AltBu, AltB 			:	out 	std_logic;
+				Y				:	out	std_logic_vector(width-1 downto 0));
 end entity ArithUnit;
 
 
-
-architecture ALU of ArithUnit is 
+architecture rtl of ArithUnit is 
 signal Aout, Bout, S : std_logic_vector(width-1 downto 0);
 signal C : std_logic_vector(width downto 0);
 signal Ovfl, Cout, Zero : std_logic;
@@ -22,7 +21,7 @@ begin
 	Bout <= (B and not AddSub) or (not B and AddSub);
 	C(0) <= AddSub;
 	x0: entity work.Adder 
-	port map(A, B, S, C(0), C(63), C(64));
+	port map(A, B, S, C(0), C(64), Ovfl);
 	
 	
 	Ovfl <= C(63) xor C(64);
@@ -49,4 +48,4 @@ begin
 	end if;
 	
 	
-end architecture ALU;
+end architecture rtl;
