@@ -5,15 +5,15 @@ Use ieee.numeric_std.all;
 entity ArithUnit is
 		generic (width : integer := 64);
 		port (
-				A, B				:		in		std_logic_vector(width-1 downto 0);
-				NotA, AddSub, ExtWord		:		in		std_logic;
-				AltBu, AltB 			:		out 	std_logic;
-				Y				:		out	std_logic_vector(width-1 downto 0);
+				A, B			:	in	std_logic_vector(width-1 downto 0);
+				NotA, AddSub, ExtWord	:	in	std_logic;
+				AltBu, AltB 		:	out 	std_logic;
+				Y			:	out	std_logic_vector(width-1 downto 0);
 end entity ArithUnit;
 
 
 
-architecture Adder64 of ArithUnit is 
+architecture ALU of ArithUnit is 
 signal Aout, Bout, S : std_logic_vector(width-1 downto 0);
 signal C : std_logic_vector(width downto 0);
 signal Ovfl, Cout, Zero : std_logic;
@@ -21,8 +21,8 @@ begin
 	Aout <= (A and not NotA) or (not A and NotA);
 	Bout <= (B and not AddSub) or (not B and AddSub);
 	C(0) <= AddSub;
-	x0: entity ExU.Adder 
-	port map(A, B, C(0),S, C(64));
+	x0: entity work.Adder 
+	port map(A, B, S, C(0), C(63), C(64));
 	
 	
 	Ovfl <= C(63) xor C(64);
@@ -30,4 +30,23 @@ begin
 	
 	Y <= (S and not ExtWord) or (not s and ExtWord);-- not sure what to do with the sign extension
 	
-end architecture Adder64;
+	-- unsigned A less than B 
+	if (Zero==1) then 
+		AltBu=0;
+	elseif (Cout==0) then
+		AltBu=0;
+	else 
+		AltBu=1;
+	end if;
+	
+	-- signed A less than B
+	if (Zero==1) then 
+		AltB=0;
+	elseif (Ovfl==0) then
+		AltB=0;
+	else 
+		AltB=1;
+	end if;
+	
+	
+end architecture ALU;
