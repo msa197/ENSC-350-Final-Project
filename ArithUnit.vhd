@@ -15,16 +15,14 @@ end entity ArithUnit;
 architecture rtl of ArithUnit is 
 signal Aout, Bout, S : std_logic_vector(width-1 downto 0);
 signal C : std_logic_vector(width downto 0);
-signal Ovfl, Cout, Zero : std_logic;
+signal Cin, Ovfl, Cout, Zero : std_logic;
 begin
 	Aout <= (A and not NotA) or (not A and NotA);
 	Bout <= (B and not AddSub) or (not B and AddSub);
-	C(0) <= AddSub;
+	Cin <= AddSub;
 	x0: entity work.Adder 
-	port map(A, B, S, C(0), C(64), Ovfl);
+	port map(A, B, S, Cin, Cout, Ovfl);
 	
-	
-	Ovfl <= C(63) xor C(64);
 	Zero <= S(width-1 downto 0) nor S(width-1 downto 0); -- not sure if this is correct, 64 bit input NOR
 	
 	Y <= (S and not ExtWord) or (not s and ExtWord);-- not sure what to do with the sign extension
