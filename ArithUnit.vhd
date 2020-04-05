@@ -6,25 +6,26 @@ entity ArithUnit is
 		generic (N : integer := 64);
 		port (
 				A, B				:	in	std_logic_vector(N-1 downto 0);
-				NotA, AddSub, ExtWord		:	in	std_logic;
+				NotA, AddnSub, ExtWord		:	in	std_logic;
 				AltBu, AltB 			:	out 	std_logic;
-				Y				:	out	std_logic_vector(N-1 downto 0));
+				Y				:	out	std_logic_vector(N-1 downto 0);
+				Cout, Ovfl, Zero		:	out 	std_logic);
 end entity ArithUnit;
 
 
 architecture rtl of ArithUnit is 
 signal Aout, Bout, S : std_logic_vector(N-1 downto 0);
-signal Cin, Ovfl, Cout, Zero : std_logic;
 begin
 	Aout <= (A and not NotA) or (not A and NotA);
-	Bout <= (B and not AddSub) or (not B and AddSub);
-	Cin <= AddSub;
+	Bout <= (B and not AddnSub) or (not B and AddnSub);
+
+	-- 64 bit adder
 	x0: entity work.Adder 
-	port map(A, B, S, Cin, Cout, Ovfl);
+	port map(A, B, S, AddnSub, Cout, Ovfl);
 	
-	Zero <= S(N-1 downto 0) nor S(N-1 downto 0); -- not sure if this is correct, 64 bit input NOR
+	Zero <= nor S; 
 	
-	Y <= (S and not ExtWord) or (not s and ExtWord);-- not sure what to do with the sign extension
+	Y <= (S and not ExtWord) or (S(63 downto 32) <= (others => S(32)) and ExtWord);-- not sure what to do with the sign extension
 	
 	-- unsigned A less than B 
 	AltBu <= not Cout;
