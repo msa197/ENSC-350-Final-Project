@@ -18,11 +18,11 @@ signal Aout, Bout, S : std_logic_vector(N-1 downto 0);
 begin
 	with NotA select 
 	Aout <= A when 0, 
-		not A when 1;
+		not A when others;
 
 	with AddnSub select
 	Bout <= B when 0,
-		not B when 1;
+		not B when others;
 
 	-- 64 bit adder
 	x0: entity work.Adder 
@@ -32,7 +32,7 @@ begin
 	
 	with ExtWord select
 	Y <= S when 0,
-	     (S(63 downto 32) <= (others => S(32))) when 1;	
+	     ((63 downto 32 => S(31)) & S(31 downto 0)) when others;	
 
 	-- unsigned A less than B 
 	AltBu <= not Cout;
