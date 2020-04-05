@@ -16,8 +16,13 @@ end entity ArithUnit;
 architecture rtl of ArithUnit is 
 signal Aout, Bout, S : std_logic_vector(N-1 downto 0);
 begin
-	Aout <= (A and not NotA) or (not A and NotA);
-	Bout <= (B and not AddnSub) or (not B and AddnSub);
+	with NotA select 
+	Aout <= A when 0, 
+		not A when 1;
+
+	with AddnSub select
+	Bout <= B when 0,
+		not B when 1;
 
 	-- 64 bit adder
 	x0: entity work.Adder 
@@ -25,8 +30,10 @@ begin
 	
 	Zero <= nor S; 
 	
-	Y <= (S and not ExtWord) or (S(63 downto 32) <= (others => S(32)) and ExtWord);-- not sure what to do with the sign extension
-	
+	with ExtWord select
+	Y <= S when 0,
+	     (S(63 downto 32) <= (others => S(32))) when 1;	
+
 	-- unsigned A less than B 
 	AltBu <= not Cout;
 	
