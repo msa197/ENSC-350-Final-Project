@@ -25,7 +25,7 @@ begin
 	
 	Zero <= nor S; 
 	
-	Y <= (S and not ExtWord) or (S(63 downto 32) <= (others => S(32)) and ExtWord);-- not sure what to do with the sign extension
+	Y <= (S and not ExtWord) or ((S(63 downto 32) <= (others => S(32))) and ExtWord);-- not sure what to do with the sign extension
 	
 	-- unsigned A less than B 
 	AltBu <= not Cout;
