@@ -3,7 +3,7 @@ Use ieee.std_logic_1164.all;
 Use ieee.numeric_std.all;
 
 entity ArithUnit is
-		generic (N : integer := 64);
+		generic (N : natural := 64);
 		port (
 				A, B				:	in	std_logic_vector(N-1 downto 0);
 				NotA, AddnSub, ExtWord		:	in	std_logic;
@@ -17,11 +17,11 @@ architecture rtl of ArithUnit is
 signal Aout, Bout, S : std_logic_vector(N-1 downto 0);
 begin
 	with NotA select 
-	Aout <= A when 0, 
+	Aout <= A when '0', 
 		not A when others;
 
 	with AddnSub select
-	Bout <= B when 0,
+	Bout <= B when '0',
 		not B when others;
 
 	-- 64 bit adder
@@ -31,8 +31,8 @@ begin
 	Zero <= nor S; 
 	
 	with ExtWord select
-	Y <= S when 0,
-	     ((63 downto 32 => S(31)) & S(31 downto 0)) when others;	
+	Y <= S when '0',
+	     (1 to 32 => S(31)) & S(31 downto 0) when others;	
 
 	-- unsigned A less than B 
 	AltBu <= not Cout;
