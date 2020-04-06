@@ -14,18 +14,18 @@ architecture rtl of Adder is
 signal g,p : std_logic_vector(N-1 downto 0);
 signal C : std_logic_vector(N downto 0);
 begin
-	g <= A and B;
-	p <= A xor B;
+	g <= A and B;  -- generate signal
+	p <= A xor B;  -- propogate signal
 	C(0) <= Cin;
 
 	carry: for i in N-1 downto 0 generate
 	begin
-		C(i+1) <= g(i) or (p(i) and C(i));
-		Y(i) <= C(i) xor p(i);
+		C(i+1) <= g(i) or (p(i) and C(i)); --carry out
+		Y(i) <= C(i) xor p(i); --output of adder
 	end generate carry;
 	
-	Cout <= C(N);
-	Ovfl <= C(N) xor C(N-1);
+	Cout <= C(N);  --C(64) carry out
+	Ovfl <= C(N) xor C(N-1);  --Overflow bit, used in Arithmetic Unit  
 end architecture rtl;
 
 
