@@ -6,11 +6,11 @@ Use ieee.std_logic_misc.all;
 entity ArithUnit is
 		generic (N : natural := 64);
 		port (
-				A, B				:	in	std_logic_vector(N-1 downto 0);
-				NotA, AddnSub, ExtWord		:	in	std_logic;
-				AltBu, AltB 			:	out 	std_logic;
-				Y				:	out	std_logic_vector(N-1 downto 0);
-				Cout, Ovfl, Zero		:	out 	std_logic);
+			A, B				:	in	std_logic_vector(N-1 downto 0);
+			NotA, AddnSub, ExtWord		:	in	std_logic;
+			AltBu, AltB 			:	out 	std_logic;
+			Y				:	out	std_logic_vector(N-1 downto 0);
+			Cout, Ovfl, Zero		:	out 	std_logic);
 end entity ArithUnit;
 
 
@@ -18,24 +18,24 @@ architecture rtl of ArithUnit is
 signal Aout, Bout, S : std_logic_vector(N-1 downto 0);
 signal C, O : std_logic;
 begin
-	with NotA select 
+	with NotA select 			-- mux used to select A or inverted A
 	Aout <= A when '0', 
 		not A when others;
 
-	with AddnSub select
+	with AddnSub select			-- mux used to select B or inverted B
 	Bout <= B when '0',
 		not B when others;
 
 	-- 64 bit adder
-	x0: entity work.Adder 
-	port map(Aout, Bout, S, AddnSub, C, O);
+	x0: entity work.Adder 			
+	port map(Aout, Bout, S, AddnSub, C, O);	-- 
 	
 	Zero <= nor_reduce(S); 
 	Cout <= C;
 	Ovfl <= O;
 
-	with ExtWord select
-	Y <= S when '0',
+	with ExtWord select			-- mux used to sign extend S or not to sign extend
+	Y <= S when '0',			
 	     (1 to 32 => S(31)) & S(31 downto 0) when others;	
 	
 	-- unsigned A less than B 
