@@ -11,11 +11,10 @@ Port ( A, B, C : in std_logic_vector( N-1 downto 0 );
 End Entity ShiftUnit;
 
 architecture rtl of ShiftUnit is
-begin
 signal ASelect : std_logic;
-singal Aout, Aswap : std_logic_vector(N-1 downto 0);
+signal Aout, Aswap : std_logic_vector(N-1 downto 0);
 signal ShiftCount : std_logic_vector(5 downto 0);
-singal LLout, RLout, RAout : std_logic_vector(N-1 downto 0);
+signal LLout, RLout, RAout : std_logic_vector(N-1 downto 0);
 signal Bout, Cout, Dout, Eout : std_logic_vector(N-1 downto 0);
 begin
 
