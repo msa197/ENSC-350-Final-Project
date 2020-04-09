@@ -33,11 +33,9 @@ begin
 		AltBuExt(0) <= AltBu;
 		
 		with FuncClass select Y <=
-			AltBExt when "01",  
-			ShiftOut when "10",
-			LogicOut when "11",
-			AltBuExt when others; 
-
-
+		AltBExt when "01",  
+		ShiftOut when "10",
+		LogicOut when "11",
+		AltBuExt when others; 
 
 end architecture rtl;
