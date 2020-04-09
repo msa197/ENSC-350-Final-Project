@@ -28,16 +28,15 @@ begin
 			A when others;
 		
 		ShiftCount <= B(5 downto 0);  -- Not sure if extraction is correct
-		
 			
 		x0: entity work.SLL64
-		port map(Aout, LLout, ShiftCount);
+		port map(Aout, LLout, unsigned(B(5 downto 0)));
 		
 		x1: entity work.SRL64
-		port map(Aout, RLout, ShiftCount);
+		port map(Aout, RLout, unsigned(B(5 downto 0)));
 		
 		x2: entity work.SRA64
-		port map(Aout, RAout, ShiftCount);
+		port map(Aout, RAout, unsigned(B(5 downto 0)));
 		
 		with ShiftFN(0) select Bout <=
 			RAout when "1",
