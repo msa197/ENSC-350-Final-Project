@@ -13,29 +13,27 @@ Port ( A, B : in std_logic_vector( N-1 downto 0 );
 End Entity ExecUnit;
 
 architecture rtl of ExecUnit is
-signal LogicOut, ArithOut, ShiftOut : std_logic_vector(N-1 downto 0);
+signal LogicOut, S, ArithOut, ShiftOut : std_logic_vector(N-1 downto 0); -- S unused but needed in port map
 signal Cout, Ovfl : std_logic;
-signal AltBExt, AltBuExt : std_logic_vector(N-1 downto 0);
+signal AltBExt, AltBuExt : std_logic; -- useful temporary signals
 begin
 
 		x0: entity work.LogicUnit
 		port map(A, B, LogicFN, LogicOut);
 		
 		x1: entity work.ArithUnit
-		port map(A, B, NotA, AddnSub, ExtWord, AltBu, AltB, ArithOut, Cout, Ovfl, Zero);
+		port map(A, B, NotA, AddnSub, ExtWord, AltBuExt, AltBExt, ArithOut, S, Cout, Ovfl, Zero);
 		
 		x2: entity work.ShiftUnit
 		port map(A, B, ArithOut, ShiftOut, ShiftFN, ExtWord);
-
-		AltBExt <= (others => '0');
-		AltBExt(0) <= AltB;
-		AltBuExt <= (others => '0');
-		AltBuExt(0) <= AltBu;
 		
+		AltB <= AltBExt;
+		AltBu <= AltBuExt;
+
 		with FuncClass select Y <=
-		AltBExt when "01",  
-		ShiftOut when "10",
-		LogicOut when "11",
-		AltBuExt when others; 
+			63x"0" & AltBExt when "01",  -- pad with 63 zeros
+			ShiftOut when "10",
+			LogicOut when "11",
+			63x"0" & AltBuExt when others; 
 
 end architecture rtl;

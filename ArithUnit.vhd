@@ -9,7 +9,7 @@ entity ArithUnit is
 			A, B				:	in	std_logic_vector(N-1 downto 0);
 			NotA, AddnSub, ExtWord		:	in	std_logic;
 			AltBu, AltB 			:	out 	std_logic;
-			Y				:	out	std_logic_vector(N-1 downto 0);
+			AddY, Y				:	out	std_logic_vector(N-1 downto 0);
 			Cout, Ovfl, Zero		:	out 	std_logic);
 end entity ArithUnit;
 
@@ -33,6 +33,8 @@ begin
 	Zero <= nor_reduce(S); 
 	Cout <= C;
 	Ovfl <= O;
+
+	AddY <= S;
 
 	with ExtWord select			-- mux used to sign extend S or not to sign extend
 	Y <= S when '0',			
